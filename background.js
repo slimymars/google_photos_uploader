@@ -115,10 +115,17 @@ chrome.contextMenus.onClicked.addListener(onClickHandler);
 
 chrome.runtime.onInstalled.addListener(function() {
   var contexts = ["image"];
-  for (var i = 0; i < contexts.length; i++) {
-    var context = contexts[i];
-    var title = "Test '" + context + "' menu item";
-    var id = chrome.contextMenus.create({"title": title, "contexts":[context],
-                                         "id": "context" + context});
-  }
+  var title = "Google Photosにアップロードするやつ";
+  var parentId = "gp_parent"
+  chrome.contextMenus.create({
+    "title": title,
+    "contexts":contexts,
+    "id": parentId
+  });
+  chrome.contextMenus.create({
+    "title": "default",
+    "id": "gp_default",
+    "contexts": contexts,
+    "parentId": parentId
+  });
 });
