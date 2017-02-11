@@ -1,6 +1,6 @@
 {
   "name": "Google Photosにアップロードするやつ",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Google PhotosにWeb上の画像をアップロードするやつ",
   "background": {
     "scripts": ["background.js"],
