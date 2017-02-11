@@ -52,27 +52,48 @@ function onClickHandler(info, tab) {
   };
 
   //http://stackoverflow.com/questions/8262266/xmlhttprequest-multipart-related-post-with-xml-and-image-as-payload
-  function upload_to_album(binaryString, filetype, albumid, info, tab) {
+  function upload_to_album(arrayBuffer, filetype, albumid, metadata, token) {
     var method = 'POST';
     var url = 'http://picasaweb.google.com/data/feed/api/user/default/albumid/' + albumid;
-    var request = gen_multipart(makeUploadMatadata(info,tab), binaryString, filetype);
+    var request = gen_multipart(metadata, arrayBuffer, filetype);
     var xhr = new XMLHttpRequest();
     xhr.open(method, url, true);
-    xhr.setRequestHeader("GData-Version", '3.0');
     xhr.setRequestHeader("Content-Type",  'multipart/related; boundary="END_OF_PART"');
     xhr.setRequestHeader("MIME-version", "1.0");
+    xhr.setRequestHeader("GData-Version", '3.0');
+    //xhr.setRequestHeader("Content-Length", request.length);
     // Add OAuth Token
-    xhr.setRequestHeader("Authorization", oauth.getAuthorizationHeader(url, method, ''));
+    xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.onreadystatechange = function(data) {
         if (xhr.readyState == 4) {
-            // .. handle response
+          // alert(xhr.responseText);
         }
     };
+    console.log(request);
     xhr.send(request);
   }
-  console.log("item " + info.menuItemId + " was clicked");
-  alert(makeUploadMatadata(info, tab));
 
+  function getImageToUpload(info, tab, albumid, token) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", info.srcUrl, true);
+    xhr.responseType = "blob";
+
+    xhr.onload = function(e) {
+      if (this.status == 200) {
+        var blob = this.response;
+        var reader = new FileReader();
+        reader.addEventListener("loadend", function(){
+          upload_to_album(this.result, blob.type, albumid, makeUploadMatadata(info,tab), token);
+        });
+        reader.readAsArrayBuffer(blob);
+      }
+    };
+    xhr.send();
+  }
+
+  chrome.identity.getAuthToken({'interactive': true}, function (token) {
+    getImageToUpload(info, tab, 'default', token);
+  });
 };
 
 chrome.contextMenus.onClicked.addListener(onClickHandler);
