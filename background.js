@@ -108,7 +108,15 @@ function onClickHandler(info, tab) {
     xhr.send();
   }
 
-  getImageToUpload(info, tab, 'default');
+  function getAlbumId(info) {
+    var menuId = info.menuItemId;
+    if (menuId.substr(0,3) === "gp_") {
+      return menuId.substr(3);
+    } else {
+      throw new Error("Not Google Photos Menus?");
+    }
+  }
+  getImageToUpload(info, tab, getAlbumId(info));
 };
 
 chrome.contextMenus.onClicked.addListener(onClickHandler);
