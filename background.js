@@ -37,9 +37,9 @@ function onClickHandler(info, tab) {
   }
 
   function makeUploadMatadata(info, tab) {
-    summary = "PageUrl:" + info.pageUrl + "\n" +
-          "SrcUrl:" + info.srcUrl + "\n" +
-          "title:" + tab.title;
+    summary = "PageUrl : " + info.pageUrl + "\n" +
+          "SrcUrl : " + info.srcUrl + "\n" +
+          "title : " + tab.title;
     result =
       "Content-type: application/atom+xml\n\n" +
       "<entry xmlns='http://www.w3.org/2005/Atom'>\n" +
