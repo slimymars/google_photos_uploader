@@ -13,39 +13,37 @@ function onClickHandler(info, tab) {
     var after = '\n--END_OF_PART--';
     var size = before.length + image.byteLength + after.length;
     var uint8array = new Uint8Array(size);
-    var i = 0;
+    var i = 0; var j = 0;
 
     // Append the string.
-    for (; i<before.length; i++) {
+    for (i=0; i<before.length; i++) {
         uint8array[i] = before.charCodeAt(i) & 0xff;
     }
 
     // Append the binary data.
-    for (var j=0; j<image.byteLength; i++, j++) {
+    for (j=0; j<image.byteLength; i++, j++) {
         uint8array[i] = image[j];
     }
 
     // Append the remaining string
-    for (var j=0; j<after.length; i++, j++) {
+    for (j=0; j<after.length; i++, j++) {
         uint8array[i] = after.charCodeAt(j) & 0xff;
     }
     return uint8array.buffer; // <-- This is an ArrayBuffer object!
   }
 
   function makeUploadMatadata(info, tab) {
-    summary = "PageUrl : " + info.pageUrl + "\n" +
+    var summary = "PageUrl : " + info.pageUrl + "\n" +
           "SrcUrl : " + info.srcUrl + "\n" +
           "title : " + tab.title;
-    result =
-      "Content-type: application/atom+xml\n\n" +
+    return "Content-type: application/atom+xml\n\n" +
       "<entry xmlns='http://www.w3.org/2005/Atom'>\n" +
       "<title>"+ info.srcUrl +"</title>\n" +
       "<summary>" + summary + "</summary>\n" +
       "<category scheme=\"http://schemas.google.com/g/2005#kind\"" +
       " term=\"http://schemas.google.com/photos/2007#photo\"\n/>" +
-      "</entry>\n"
-    return result;
-  };
+      "</entry>\n";
+  }
 
   //http://stackoverflow.com/questions/8262266/xmlhttprequest-multipart-related-post-with-xml-and-image-as-payload
   function upload_to_album(arrayBuffer, filetype, albumid, metadata) {
@@ -113,14 +111,14 @@ function onClickHandler(info, tab) {
     }
   }
   getImageToUpload(info, tab, getAlbumId(info));
-};
+}
 
 chrome.contextMenus.onClicked.addListener(onClickHandler);
 
 chrome.runtime.onInstalled.addListener(function() {
   var contexts = ["image"];
   var title = "Google Photosにアップロードするやつ";
-  var parentId = "gp_parent"
+  var parentId = "gp_parent";
   chrome.contextMenus.create({
     "title": title,
     "contexts":contexts,
