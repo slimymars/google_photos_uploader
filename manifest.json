@@ -19,5 +19,6 @@
       "http://picasaweb.google.com/data/"
     ]
   },
+  "options_page": "options.html",
   "manifest_version": 2
 }
