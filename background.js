@@ -52,10 +52,16 @@ function onClickHandler(info, tab) {
   };
 
   //http://stackoverflow.com/questions/8262266/xmlhttprequest-multipart-related-post-with-xml-and-image-as-payload
-  function upload_to_album(arrayBuffer, filetype, albumid, metadata, token) {
-    var method = 'POST';
-    var url = 'http://picasaweb.google.com/data/feed/api/user/default/albumid/' + albumid;
+  function upload_to_album(arrayBuffer, filetype, albumid, metadata) {
     var request = gen_multipart(metadata, arrayBuffer, filetype);
+    var url = 'http://picasaweb.google.com/data/feed/api/user/default/albumid/' + albumid;
+    chrome.identity.getAuthToken({'interactive': true}, function (token) {
+      uploadAlbum(url, request, token, true);
+    });
+  }
+
+  function uploadAlbum(url, sendData, token, retry) {
+    var method = 'POST';
     var xhr = new XMLHttpRequest();
     xhr.open(method, url, true);
     xhr.setRequestHeader("Content-Type",  'multipart/related; boundary="END_OF_PART"');
@@ -66,14 +72,25 @@ function onClickHandler(info, tab) {
     xhr.setRequestHeader("Authorization", "Bearer " + token);
     xhr.onreadystatechange = function(data) {
         if (xhr.readyState == 4) {
-          // alert(xhr.responseText);
+          if (xhr.status == 401 && retry) {
+            // 認証失敗
+            chrome.identity.removeCachedAuthToken(
+              {"token": token},
+              function() {
+                chrome.identity.getAuthToken({'interactive': true}, function (token) {
+                  uploadAlbum(url, sendData, token, false);
+                })
+              });
+          } else if (xhr.status != 201) {
+            // なんかエラー
+            alert(xhr.status + "\n" + xhr.responseText);
+          }
         }
     };
-    console.log(request);
-    xhr.send(request);
+    xhr.send(sendData);
   }
 
-  function getImageToUpload(info, tab, albumid, token) {
+  function getImageToUpload(info, tab, albumid) {
     var xhr = new XMLHttpRequest();
     xhr.open("GET", info.srcUrl, true);
     xhr.responseType = "blob";
@@ -83,7 +100,7 @@ function onClickHandler(info, tab) {
         var blob = this.response;
         var reader = new FileReader();
         reader.addEventListener("loadend", function(){
-          upload_to_album(this.result, blob.type, albumid, makeUploadMatadata(info,tab), token);
+            upload_to_album(this.result, blob.type, albumid, makeUploadMatadata(info,tab));
         });
         reader.readAsArrayBuffer(blob);
       }
@@ -91,9 +108,7 @@ function onClickHandler(info, tab) {
     xhr.send();
   }
 
-  chrome.identity.getAuthToken({'interactive': true}, function (token) {
-    getImageToUpload(info, tab, 'default', token);
-  });
+  getImageToUpload(info, tab, 'default');
 };
 
 chrome.contextMenus.onClicked.addListener(onClickHandler);
