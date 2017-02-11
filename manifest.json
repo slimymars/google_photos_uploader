@@ -1,0 +1,14 @@
+{
+  "name": "Sample - OAuth Contacts",
+  "version": "1.0.6",
+  "description": "Google PhotosにWeb上の画像をアップロードするやつ",
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  "permissions": [
+    "identity",
+    "contextMenus"
+  ],
+  "manifest_version": 2
+}
