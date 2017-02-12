@@ -115,19 +115,49 @@ function onClickHandler(info, tab) {
 
 chrome.contextMenus.onClicked.addListener(onClickHandler);
 
+function makeMenu() {
+    var contexts = ["image"];
+    var title = "Google Photosにアップロードするやつ";
+    var parentId = "gp_parent";
+    chrome.contextMenus.create({
+        "title": title,
+        "contexts":contexts,
+        "id": parentId
+    });
+    chrome.storage.sync.get("menuList", function(data){
+        var i;
+        var json = data['menuList'];
+
+        for(i=0; i<json.length; i++) {
+            if (json[i]['id'] === void 0) {
+                //idがundefinedのとき == オプション画面
+                //TODO オプション画面へ飛ぶようにする
+                chrome.contextMenus.create({
+                    "title": "default",
+                    "id": "gp_default",
+                    "contexts": contexts,
+                    "parentId": parentId
+                });
+            } else {
+                chrome.contextMenus.create({
+                    "title": json[i]["name"],
+                    "id": "gp_" + json[i]['id'],
+                    "contexts": contexts,
+                    "parentId": parentId
+                });
+            }
+        }
+        if(json.length===0) {
+            chrome.contextMenus.create({
+                "title": "default",
+                "id": "gp_default",
+                "contexts": contexts,
+                "parentId": parentId
+            });
+        }
+    });
+}
+
 chrome.runtime.onInstalled.addListener(function() {
-  var contexts = ["image"];
-  var title = "Google Photosにアップロードするやつ";
-  var parentId = "gp_parent";
-  chrome.contextMenus.create({
-    "title": title,
-    "contexts":contexts,
-    "id": parentId
-  });
-  chrome.contextMenus.create({
-    "title": "default",
-    "id": "gp_default",
-    "contexts": contexts,
-    "parentId": parentId
-  });
+    makeMenu();
 });

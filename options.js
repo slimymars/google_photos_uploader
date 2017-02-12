@@ -66,7 +66,7 @@ function makeLiForJson() {
             }
         }
         if(html==="") {
-            html = '<li class="ui-state-default ui-state-disabled">オプション画面</li>';
+            html = '<li class="ui-state-default ui-state-disabled">デフォルト</li>';
         }
         $("#in_menu").append(html);
         $("#in_menu").sortable({
@@ -90,10 +90,12 @@ function makeJsonForLi(data) {
     });
     chrome.storage.sync.set({"menuList": json}, function () {
         alert("保存しました");
+        //TODO 保存したあと現在のメニューに反映されるようにする
     });
 }
 
 $(function() {
+    //TODO メニューからの削除
     makeLiForJson();
     $("#add").click(function(){
         if ($("#album_list li").length === 0) {
