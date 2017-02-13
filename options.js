@@ -92,7 +92,6 @@ function makeJsonForLi(data) {
   });
   chrome.storage.sync.set({"menuList": json}, function () {
     alert("保存しました");
-    //TODO 保存したあと現在のメニューに反映されるようにする
   });
 }
 

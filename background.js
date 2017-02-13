@@ -158,6 +158,15 @@ function makeMenu() {
   });
 }
 
+function resetMenu () {
+  chrome.contextMenus.removeAll(function () {
+    makeMenu();
+  });
+}
+
 chrome.runtime.onInstalled.addListener(function () {
   makeMenu();
+  chrome.storage.onChanged.addListener(function () {
+    resetMenu();
+  });
 });
