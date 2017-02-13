@@ -1,0 +1,54 @@
+body {
+  margin: 10px 2%;
+}
+
+div.float {
+  float: left;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0 5px;
+  padding: 0;
+}
+
+li {
+  margin: 0 5px 5px 5px;
+  padding: 5px;
+  font-size: 1.2em;
+  height: 1.5em;
+  line-height: 1.2em;
+  width: 45em;
+}
+
+.ui-state-highlight {
+  height: 1.5em;
+  line-height: 1.2em;
+}
+
+button.ui-button {
+  margin: 5px;
+  padding: 5px;
+  font-size: 1.5em;
+  line-height: 1.2em;
+  height: 1.7em;
+  width: 25%;
+}
+
+#buttons {
+  clear: left;
+}
+
+#album_menu {
+  background-color: papayawhip;
+  display: none;
+}
+
+#album_list {
+  height: 30em;
+  overflow: scroll;
+}
+
+#album_menu.view_album {
+  display: block;
+}

@@ -3,7 +3,9 @@
   "version": "1.0.2",
   "description": "Google PhotosにWeb上の画像をアップロードするやつ",
   "background": {
-    "scripts": ["background.js"],
+    "scripts": [
+      "background.js"
+    ],
     "persistent": false
   },
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAo+WFXrKPOmmh7bjJNkcrLGjKFoYPQzeO2/9O0OgUWzDcD+vFUlA8vnqq5G4J+LhCHmhzrqlzO84q9HuPVukURjwpQmlYBli4phIYyOxMvRadxNcrQ9MGn0uSYQFibI3ihPOYZf6BbDu6CEuiZWiG9f/OS6CZdJyk/e44VOA//+jWJ3Ed7LuCaeN8FKdAGchTF8KsApigopnO7xkuWuPIZ11wwtGF4Y3tMU6myxHr88EIrs2dTCfNtb+IZ+XdDg/2vlYn+MLu1HPYgc7q6yzg+MUNWXXyqbBaUzdRUDabPNJeJjDVzhbnPSsOfxxCeil6cmEmUUgdMWe3vQeK5FCukQIDAQAB",
