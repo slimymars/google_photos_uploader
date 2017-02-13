@@ -61,14 +61,14 @@ function makeLiForJson() {
     for (i = 0; i < json.length; i++) {
       if (json[i]['id'] === void 0) {
         //idがundefinedのとき == オプション画面
-        html += ['<li class="ui-state-default ui-state-disabled">', json[i]["name"], "</li>\n"].join("");
+        html += "<li class='ui-state-default ui-state-disabled'>オプション...</li>\n";
       } else {
         html += ['<li class="ui-state-default" albumid="',
           json[i]["id"], '">', json[i]["name"], "</li>\n"].join("");
       }
     }
     if (html === "") {
-      html = '<li class="ui-state-default ui-state-disabled">デフォルト</li>';
+      html = '<li class="ui-state-default ui-state-disabled">オプション...</li>';
     }
     $("#in_menu").append(html);
     $("#in_menu").sortable({

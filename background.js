@@ -110,10 +110,21 @@ function onClickHandler(info, tab) {
     }
   }
 
-  getImageToUpload(info, tab, getAlbumId(info));
+  if (info.menuItemId === "go_to_option") {
+    //オプションへ飛ぶ
+    goToOption(tab);
+  } else {
+    //アップロード処理
+    getImageToUpload(info, tab, getAlbumId(info));
+  }
 }
 
 chrome.contextMenus.onClicked.addListener(onClickHandler);
+
+function goToOption(tab) {
+  var url = chrome.extension.getURL("options.html");
+  window.open(url);
+}
 
 function makeMenu() {
   var contexts = ["image"];
@@ -131,10 +142,9 @@ function makeMenu() {
     for (i = 0; i < json.length; i++) {
       if (json[i]['id'] === void 0) {
         //idがundefinedのとき == オプション画面
-        //TODO オプション画面へ飛ぶようにする
         chrome.contextMenus.create({
-          "title": "default",
-          "id": "gp_default",
+          "title": "オプション...",
+          "id": "go_to_option",
           "contexts": contexts,
           "parentId": parentId
         });
