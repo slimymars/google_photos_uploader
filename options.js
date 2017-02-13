@@ -46,7 +46,14 @@ function analyzeGooglePhotoXML(append_jq) {
     append_jq.find("li").draggable({
       connectToSortable: "#in_menu",
       helper: "clone",
-      revert: "invalid"
+      revert: "invalid",
+      stop: function (event, ui) {
+        ui.helper.append("<span class='ui-icon ui-icon-trash trash'></span>");
+        ui.helper.off("dragstop");
+        ui.helper.find("span.trash").click(function () {
+          $(this).parent().remove();
+        })
+      }
     });
     $("#album_menu").toggle("slide", 1000);
   }
@@ -64,7 +71,7 @@ function makeLiForJson() {
         html += "<li class='ui-state-default ui-state-disabled'>オプション...</li>\n";
       } else {
         html += ['<li class="ui-state-default" albumid="',
-          json[i]["id"], '">', json[i]["name"], "</li>\n"].join("");
+          json[i]["id"], '">', json[i]["name"], "<span class='ui-icon ui-icon-trash trash'></span></li>\n"].join("");
       }
     }
     if (html === "") {
@@ -77,6 +84,9 @@ function makeLiForJson() {
       cancel: ".ui-state-disabled"
     });
     $("ul, li").disableSelection();
+    $("span.trash").click(function () {
+      $(this).parent().remove();
+    });
   });
 }
 
@@ -96,7 +106,6 @@ function makeJsonForLi(data) {
 }
 
 $(function () {
-  //TODO メニューからの削除
   makeLiForJson();
   $("#add").click(function () {
     if ($("#album_list li").length === 0) {
