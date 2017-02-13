@@ -77,6 +77,9 @@ function onClickHandler(info, tab) {
         } else if (xhr.status != 201) {
           // なんかエラー
           alert(xhr.status + "\n" + xhr.responseText);
+        } else {
+          // 正常終了
+          // TODO アップロード正常終了時に通知をする
         }
       }
     };
