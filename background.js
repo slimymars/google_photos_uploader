@@ -1,57 +1,50 @@
 // The onClicked callback function.
 function onClickHandler(info, tab) {
   // http://stackoverflow.com/questions/8262266/xmlhttprequest-multipart-related-post-with-xml-and-image-as-payload
-  function gen_multipart(metadata, image, mimetype) {
-    image = new Uint8Array(image); // Wrap in view to get data
-
+  function gen_multipart(metadata, image, mimetype, callback) {
     var before = [
       "Media multipart posting\n",
       '--END_OF_PART', "\n",
       metadata,
       '--END_OF_PART', "\n",
       'Content-Type:', mimetype, "\n\n"].join('');
-    var after = '\n--END_OF_PART--';
-    var size = before.length + image.byteLength + after.length;
-    var uint8array = new Uint8Array(size);
-    var i = 0;
-    var j = 0;
-
-    // Append the string.
-    for (i = 0; i < before.length; i++) {
-      uint8array[i] = before.charCodeAt(i) & 0xff;
-    }
-
-    // Append the binary data.
-    for (j = 0; j < image.byteLength; i++, j++) {
-      uint8array[i] = image[j];
-    }
-
-    // Append the remaining string
-    for (j = 0; j < after.length; i++, j++) {
-      uint8array[i] = after.charCodeAt(j) & 0xff;
-    }
-    return uint8array.buffer; // <-- This is an ArrayBuffer object!
+    var b = new Blob([before, image, '\n--END_OF_PART--'])
+    var reader = new FileReader();
+    reader.addEventListener("loadend", function() {
+      var buffer = reader.result;
+      callback(buffer);
+    });
+    reader.readAsArrayBuffer(b);
   }
 
   function makeUploadMatadata(info, tab) {
-    var summary = "PageUrl : " + info.pageUrl + "\n" +
-        "SrcUrl : " + info.srcUrl + "\n" +
-        "title : " + tab.title;
+    var summary = "PageUrl : ' " + info.pageUrl + " '\n" +
+        "SrcUrl : ' " + info.srcUrl + " '\n" +
+        "title : ' " + tab.title + " '";
+    summary = summary.replace(
+        /["&'<>]/g,
+        function( ch ) { return { '"':'&quot;', '&':'&amp;', '\'':'&#39;', '<':'&lt;', '>':'&gt;' }[ ch ]; }
+    );
+    var title = tab.title.replace(
+        /["&'<>]/g,
+        function( ch ) { return { '"':'&quot;', '&':'&amp;', '\'':'&#39;', '<':'&lt;', '>':'&gt;' }[ ch ]; }
+    );
     return "Content-type: application/atom+xml\n\n" +
         "<entry xmlns='http://www.w3.org/2005/Atom'>\n" +
-        "<title>" + tab.title + "</title>\n" +
+        "<title>" + title + "</title>\n" +
         "<summary>" + summary + "</summary>\n" +
         "<category scheme=\"http://schemas.google.com/g/2005#kind\"" +
-        " term=\"http://schemas.google.com/photos/2007#photo\"\n/>" +
+        " term=\"http://schemas.google.com/photos/2007#photo\" />" +
         "</entry>\n";
   }
 
   //http://stackoverflow.com/questions/8262266/xmlhttprequest-multipart-related-post-with-xml-and-image-as-payload
   function upload_to_album(arrayBuffer, filetype, albumid, metadata) {
-    var request = gen_multipart(metadata, arrayBuffer, filetype);
-    var url = 'http://picasaweb.google.com/data/feed/api/user/default/albumid/' + albumid;
-    chrome.identity.getAuthToken({'interactive': true}, function (token) {
-      uploadAlbum(url, request, token, true);
+    gen_multipart(metadata, arrayBuffer, filetype, function (request) {
+      var url = 'http://picasaweb.google.com/data/feed/api/user/default/albumid/' + albumid;
+      chrome.identity.getAuthToken({'interactive': true}, function (token) {
+        uploadAlbum(url, request, token, true);
+      });
     });
   }
 
