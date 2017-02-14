@@ -39,7 +39,7 @@ function onClickHandler(info, tab) {
         "title : " + tab.title;
     return "Content-type: application/atom+xml\n\n" +
         "<entry xmlns='http://www.w3.org/2005/Atom'>\n" +
-        "<title>" + info.srcUrl + "</title>\n" +
+        "<title>" + tab.title + "</title>\n" +
         "<summary>" + summary + "</summary>\n" +
         "<category scheme=\"http://schemas.google.com/g/2005#kind\"" +
         " term=\"http://schemas.google.com/photos/2007#photo\"\n/>" +
