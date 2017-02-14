@@ -130,6 +130,7 @@ function goToOption(tab) {
 }
 
 function makeMenu() {
+  // ToDo サブメニューの実装。どうやら11個までしか表示できないらしい。
   var contexts = ["image"];
   var title = "Google Photosにアップロードするやつ";
   var parentId = "gp_parent";
