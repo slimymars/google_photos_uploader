@@ -18,9 +18,9 @@ function onClickHandler(info, tab) {
   }
 
   function makeUploadMatadata(info, tab) {
-    var summary = "PageUrl : ' " + info.pageUrl + " '\n" +
-        "SrcUrl : ' " + info.srcUrl + " '\n" +
-        "title : ' " + tab.title + " '";
+    var summary = "タイトル : " + tab.title + "\n" +
+        "画像URL : " + info.srcUrl + "\n" +
+        "設置ページURL : " + info.pageUrl + "\n";
     summary = summary.replace(
         /["&'<>]/g,
         function( ch ) { return { '"':'&quot;', '&':'&amp;', '\'':'&#39;', '<':'&lt;', '>':'&gt;' }[ ch ]; }
@@ -123,7 +123,7 @@ function goToOption(tab) {
 }
 
 function makeMenu() {
-  // ToDo サブメニューの実装。どうやら11個までしか表示できないらしい。
+  // ToDo サブメニューの実装。どうやら11個までしか表示できないらしい。←バグかも
   var contexts = ["image"];
   var title = "Google Photosにアップロードするやつ";
   var parentId = "gp_parent";
