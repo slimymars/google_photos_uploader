@@ -1,0 +1,3 @@
+.gitignore export-ignore
+.gitattributes export-ignore
+make_package.sh export-ignore
