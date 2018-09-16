@@ -126,16 +126,20 @@ function makeMenu() {
   // ToDo サブメニューの実装。どうやら11個までしか表示できないらしい。←バグかも
   var contexts = ["image"];
   var title = "Google Photosにアップロードするやつ";
-  var parentId = "gp_parent";
+  var parentId = "parent";
   chrome.contextMenus.create({
     "title": title,
     "contexts": contexts,
     "id": parentId
   });
-  chrome.storage.sync.get("menuList", function (data) {
+  chrome.storage.local.get("menuList", function (data) {
     var i;
     var json = data['menuList'];
 
+    if (json === void 0) {
+      json = [];
+      console.log("none data");
+    }
     for (i = 0; i < json.length; i++) {
       if (json[i]['id'] === void 0) {
         //idがundefinedのとき == オプション画面
@@ -146,15 +150,18 @@ function makeMenu() {
           "parentId": parentId
         });
       } else {
-        chrome.contextMenus.create({
-          "title": json[i]["name"],
-          "id": "gp_" + json[i]['id'],
-          "contexts": contexts,
-          "parentId": parentId
-        });
+        if (json[i]['id'] !== '') {
+            chrome.contextMenus.create({
+                "title": json[i]["name"],
+                "id": json[i]['id'],
+                "contexts": contexts,
+                "parentId": parentId
+            });
+        }
       }
     }
     if (json.length === 0) {
+      console.log("json.length 0")
       chrome.contextMenus.create({
         "title": "default",
         "id": "gp_default",

@@ -38,8 +38,7 @@ function analyzeGooglePhotoXML(append_jq) {
   return function (xml) {
     $(xml).find("entry").each(function () {
       var h = $(this);
-      // idでフィルタするとgphoto:idとidを拾ってきてしまうため、notでさらにフィルタする
-      html += ['<li albumid="', h.find('id').not(':contains(http)').text(),
+      html += ['<li albumid="', h.find('gphoto\\:id').text(),
         '" class="ui-state-default">', h.find(">title").text(), "</li>\n"].join("");
     });
     append_jq.append(html);
@@ -60,19 +59,22 @@ function analyzeGooglePhotoXML(append_jq) {
 }
 
 function makeLiForJson() {
-  chrome.storage.sync.get("menuList", function (data) {
+  chrome.storage.local.get("menuList", function (data) {
     var i;
     var html = "";
     var json = data['menuList'];
-
-    for (i = 0; i < json.length; i++) {
-      if (json[i]['id'] === void 0) {
-        //idがundefinedのとき == オプション画面
+    if (json === void 0) {
         html += "<li class='ui-state-default ui-state-disabled'>オプション...</li>\n";
-      } else {
-        html += ['<li class="ui-state-default" albumid="',
-          json[i]["id"], '">', json[i]["name"], "<span class='ui-icon ui-icon-trash trash'></span></li>\n"].join("");
-      }
+    } else {
+        for (i = 0; i < json.length; i++) {
+            if (json[i]['id'] === void 0) {
+                //idがundefinedのとき == オプション画面
+                html += "<li class='ui-state-default ui-state-disabled'>オプション...</li>\n";
+            } else {
+                html += ['<li class="ui-state-default" albumid="',
+                    json[i]["id"], '">', json[i]["name"], "<span class='ui-icon ui-icon-trash trash'></span></li>\n"].join("");
+            }
+        }
     }
     if (html === "") {
       html = '<li class="ui-state-default ui-state-disabled">オプション...</li>';
@@ -100,7 +102,7 @@ function makeJsonForLi(data) {
         }
     );
   });
-  chrome.storage.sync.set({"menuList": json}, function () {
+  chrome.storage.local.set({"menuList": json}, function () {
     alert("保存しました");
   });
 }
